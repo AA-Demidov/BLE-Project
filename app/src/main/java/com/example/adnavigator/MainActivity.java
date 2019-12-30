@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnCallUID;
     Button btnVisionUID;
     TextView textUID;
-    int a;// переменная а
+
 
 
     // Объявление блютузных классов
