@@ -153,7 +153,11 @@ public class MainActivity extends AppCompatActivity {
                             *
                             *
                             * */
-                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " ");
+
+
+                           // double metr = (0.0003 * (ListReadingRecords.get(j).RSSI^3) ) - (0.0332 * (ListReadingRecords.get(j).RSSI ^ 2)) + (1.1615 * ListReadingRecords.get(j).RSSI - 10.706);
+                            double metr = (-0.08 * ListReadingRecords.get(j).RSSI)-3 ;
+                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " " + metr);
                             break;
                         }
                     }
