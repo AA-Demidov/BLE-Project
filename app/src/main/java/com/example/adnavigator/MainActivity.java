@@ -51,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
     /// Объявление адаптеров для передачи данных на форму
     ArrayAdapter<String> mAdapter;
     ArrayAdapter<String> lAdapter;
+    ArrayAdapter<String> rAdapter;
 
     /// Объявление массивов хранения данных
     ArrayList<String> ListScanRecords = new ArrayList<>(); //final???
     ArrayList<String> UniqueLabels = new ArrayList<>();
     ArrayList<Reading> ListReadingRecords = new ArrayList<>();
+    ArrayList<String> readings = new ArrayList<>(); // Временный массив для кнопки
 
     /**
      * Функция получения списка уникальных меток
@@ -116,11 +118,14 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, ListScanRecords);
         lAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, UniqueLabels);
+               android.R.layout.simple_list_item_1, UniqueLabels);
+        rAdapter = lAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, readings);
 
         // Привяжем массив через адаптер
         ListCheck.setAdapter(mAdapter);
         ListUID.setAdapter(lAdapter);
+        ListUID.setAdapter(rAdapter);
 
         /**
          * Обновление данных об уникальных метках на форме
@@ -128,8 +133,20 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener oclVisionUID = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /// Получаем список уникальных меток
                 UniqueLabels = CompareUIDWithScanRecords(ListScanRecords);
-                lAdapter.notifyDataSetChanged();
+                readings.add("ads");
+                // Функция будет работать если в списке ListScanRecords будет достаточно данных
+                for (int i = 0; i<UniqueLabels.size(); i++)
+                {
+                    for (int j=ListReadingRecords.size();j<0;j--){
+                        if (ListReadingRecords.get(j).UUID == UniqueLabels.get(i)) {
+                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " ");
+                            break;
+                        }
+                    }
+                }
+                rAdapter.notifyDataSetChanged();
             }
         };
         // создаем обработчик нажатия
@@ -155,20 +172,7 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener oclBtnClear = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Объявим новый список для хранения промежуточных данных
-                ArrayList<String> readings = new ArrayList<>();
-                /// Получаем список уникальных меток
-                UniqueLabels = CompareUIDWithScanRecords(ListScanRecords);
-                // Функция будет работать если в списке ListScanRecords будет достаточно данных
-                for (int i = 0; i<UniqueLabels.size(); i++)
-                {
-                    for (int j=ListReadingRecords.size();j<0;j--){
-                        if (ListReadingRecords.get(j).UUID == UniqueLabels.get(i)) {
-                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " ");
-                            break;
-                        }
-                    }
-                }
+
 
                 /** Пока не нужно
                 /// Очистка списка считываний
@@ -226,12 +230,13 @@ public class MainActivity extends AppCompatActivity {
                 /// Заносим данные в массив показаний
                 ListScanRecords.add(data.substring(18, 50));
                 /// Занесение данных в список классов
-                Reading temp=null;
+                Reading temp=new Reading();
                 temp.RSSI=mRssi;
                 temp.UUID=data.substring(18, 50);
                 ListReadingRecords.add(temp);
                 /// Через адаптер обновляем данные на форме приложения
                 mAdapter.notifyDataSetChanged();
+
             }
         }
     };
