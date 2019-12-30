@@ -23,6 +23,15 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * Класс "показание"
+ * Каждая запись содержит UUID и RSSI
+ * */
+class Reading{
+    String UUID;
+    Integer RSSI;
+}
+
 public class MainActivity extends AppCompatActivity {
     /// Опредение визуальных компонентов
     Button btnCheck;
@@ -46,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     /// Объявление массивов хранения данных
     ArrayList<String> ListScanRecords = new ArrayList<>(); //final???
     ArrayList<String> UniqueLabels = new ArrayList<>();
+    ArrayList<Reading> ListReadingRecords = new ArrayList<>();
 
     /**
      * Функция получения списка уникальных меток
@@ -141,13 +151,30 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-
+        /// Переопределим кнопку на показ данных UUID-RSSI-Расстояние
         View.OnClickListener oclBtnClear = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Объявим новый список для хранения промежуточных данных
+                ArrayList<String> readings = new ArrayList<>();
+                /// Получаем список уникальных меток
+                UniqueLabels = CompareUIDWithScanRecords(ListScanRecords);
+                // Функция будет работать если в списке ListScanRecords будет достаточно данных
+                for (int i = 0; i<UniqueLabels.size(); i++)
+                {
+                    for (int j=ListReadingRecords.size();j<0;j--){
+                        if (ListReadingRecords.get(j).UUID == UniqueLabels.get(i)) {
+                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " ");
+                            break;
+                        }
+                    }
+                }
+
+                /** Пока не нужно
                 /// Очистка списка считываний
                 ListScanRecords.clear();
                 mAdapter.notifyDataSetChanged();
+                 */
             }
         };
 
@@ -198,6 +225,11 @@ public class MainActivity extends AppCompatActivity {
             if (dataType.equals("0201061aff4c00")){
                 /// Заносим данные в массив показаний
                 ListScanRecords.add(data.substring(18, 50));
+                /// Занесение данных в список классов
+                Reading temp=null;
+                temp.RSSI=mRssi;
+                temp.UUID=data.substring(18, 50);
+                ListReadingRecords.add(temp);
                 /// Через адаптер обновляем данные на форме приложения
                 mAdapter.notifyDataSetChanged();
             }
