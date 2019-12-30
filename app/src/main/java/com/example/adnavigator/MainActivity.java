@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -133,19 +134,31 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener oclVisionUID = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                readings.clear();
                 /// Получаем список уникальных меток
                 UniqueLabels = CompareUIDWithScanRecords(ListScanRecords);
-                readings.add("ads");
                 // Функция будет работать если в списке ListScanRecords будет достаточно данных
                 for (int i = 0; i<UniqueLabels.size(); i++)
                 {
-                    for (int j=ListReadingRecords.size();j<0;j--){
-                        if (ListReadingRecords.get(j).UUID == UniqueLabels.get(i)) {
+                    for (int j=ListReadingRecords.size()-1;j>0;j--){ // -1 для того, чтобы не выходил за пределы массива
+                        if (ListReadingRecords.get(j).UUID.equals(UniqueLabels.get(i))) {
+                            /*
+                            *
+                            *
+                            *
+                            *
+                            * ЗДЕСЬ!
+                            *
+                            *
+                            *
+                            *
+                            * */
                             readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " ");
                             break;
                         }
                     }
                 }
+                Collections.sort(readings);
                 rAdapter.notifyDataSetChanged();
             }
         };
