@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     for (int j=ListReadingRecords.size()-1;j>0;j--){ // -1 для того, чтобы не выходил за пределы массива
                         if (ListReadingRecords.get(j).UUID.equals(UniqueLabels.get(i))) {
+
                             /*
                             *
                             *
@@ -154,10 +155,7 @@ public class MainActivity extends AppCompatActivity {
                             *
                             * */
 
-
-                           // double metr = (0.0003 * (ListReadingRecords.get(j).RSSI^3) ) - (0.0332 * (ListReadingRecords.get(j).RSSI ^ 2)) + (1.1615 * ListReadingRecords.get(j).RSSI - 10.706);
-                            double metr = (-0.08 * ListReadingRecords.get(j).RSSI)-3 ;
-                            readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " " + metr);
+                           // readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " " + metr);
                             break;
                         }
                     }
@@ -245,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
             /// если заголовок совпадает со стандартным заголовком формата iBeacon (0201061aff4c00)
             if (dataType.equals("0201061aff4c00")){
                 /// Заносим данные в массив показаний
-                ListScanRecords.add(data.substring(18, 50));
+                ListScanRecords.add(data.substring(18, 50) + ";" + mRssi + "\r\n");
                 /// Занесение данных в список классов
                 Reading temp=new Reading();
                 temp.RSSI=mRssi;
@@ -253,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
                 ListReadingRecords.add(temp);
                 /// Через адаптер обновляем данные на форме приложения
                 mAdapter.notifyDataSetChanged();
-
             }
         }
     };
