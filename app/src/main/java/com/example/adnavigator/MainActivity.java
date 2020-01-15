@@ -142,25 +142,28 @@ public class MainActivity<permissionStatus, val, bluetooth> extends AppCompatAct
                 readings.clear();
                 /// Получаем список уникальных меток
                 UniqueLabels = CompareUIDWithScanRecords(ListScanRecords);
+                int n=5; // количество измерений для усреднения
                 // Функция будет работать если в списке ListScanRecords будет достаточно данных
                 for (int i = 0; i<UniqueLabels.size(); i++)
                 {
+                    int t=0; // сколько раз встретили
+                    float trssi=0; // сколько раз встретили
                     for (int j=ListReadingRecords.size()-1;j>0;j--){ // -1 для того, чтобы не выходил за пределы массива
-                        if (ListReadingRecords.get(j).UUID.equals(UniqueLabels.get(i))) {
+                        if (t<n){
+                            if (ListReadingRecords.get(j).UUID.equals(UniqueLabels.get(i))) {
+                                t++;
+                                trssi += ListReadingRecords.get(j).RSSI;
+                                /*
+                                 * ЗДЕСЬ!
+                                 * */
+                                //readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI);
+                                //break;
+                            }
 
-                            /*
-                            *
-                            *
-                            *
-                            *
-                            * ЗДЕСЬ!
-                            *
-                            *
-                            *
-                            *
-                            * */
-
-                           // readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI + " " + metr);
+                        }
+                        else
+                        {
+                            readings.add(UniqueLabels.get(i) + " " + trssi/t);
                             break;
                         }
                     }
@@ -255,7 +258,7 @@ public class MainActivity<permissionStatus, val, bluetooth> extends AppCompatAct
             /// если заголовок совпадает со стандартным заголовком формата iBeacon (0201061aff4c00)
             if (dataType.equals("0201061aff4c00")){
                 /// Заносим данные в массив показаний
-                ListScanRecords.add(data.substring(18, 50) + ";" + mRssi + "\r\n");
+                ListScanRecords.add(data.substring(18, 50));
                 /// Занесение данных в список классов
                 Reading temp=new Reading();
                 temp.RSSI=mRssi;
