@@ -147,23 +147,19 @@ public class MainActivity<permissionStatus, val, bluetooth> extends AppCompatAct
                 for (int i = 0; i<UniqueLabels.size(); i++)
                 {
                     int t=0; // сколько раз встретили
-                    float trssi=0; // сколько раз встретили
+                    double trssi=0; // сколько раз встретили
                     for (int j=ListReadingRecords.size()-1;j>0;j--){ // -1 для того, чтобы не выходил за пределы массива
                         if (t<n){
                             if (ListReadingRecords.get(j).UUID.equals(UniqueLabels.get(i))) {
                                 t++;
                                 trssi += ListReadingRecords.get(j).RSSI;
-                                /*
-                                 * ЗДЕСЬ!
-                                 * */
-                                //readings.add(UniqueLabels.get(i) + " " + ListReadingRecords.get(j).RSSI);
-                                //break;
                             }
-
                         }
                         else
                         {
-                            readings.add(UniqueLabels.get(i) + " " + trssi/t);
+                            double SRrssi = trssi/t; // усреднейный RSSI
+                            double Metr = (-0.0492*SRrssi*SRrssi)-6.767*SRrssi-227.81; // Перевод из rssi в метры
+                            readings.add(UniqueLabels.get(i) + " " + Metr);
                             break;
                         }
                     }
@@ -189,7 +185,7 @@ public class MainActivity<permissionStatus, val, bluetooth> extends AppCompatAct
                 }
                 else
                 {
-                    // Bluetooth выключен. Предложим пользователю включить его.
+                    // Bluetooth выключен. Предложим пользователю включить его
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 }
