@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.adnavigator">
-    <uses-permission android:name="android.permission.BLUETOOTH"/> <!-- Разрешение к блютузу -->
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/> <!-- Разрешение к блютузу -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Разрешение на получение местоположения -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> Разрешение на получение местоположения -->
     <uses-permission android:name="android.permission.READ_OWNER_DATA" />
     <uses-permission android:name="android.permission.WRITE_OWNER_DATA" />
+
 
     <application
         android:allowBackup="true"

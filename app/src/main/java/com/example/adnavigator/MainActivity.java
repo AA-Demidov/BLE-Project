@@ -1,6 +1,8 @@
 package com.example.adnavigator;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.bluetooth.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -33,7 +35,7 @@ class Reading{
     Integer RSSI;
 }
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity<permissionStatus, val, bluetooth> extends AppCompatActivity {
     /// Опредение визуальных компонентов
     Button btnCheck;
     Button btnMail;
@@ -44,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     // Объявление блютузных классов
+
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothLeScanner;
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> UniqueLabels = new ArrayList<>();
     ArrayList<Reading> ListReadingRecords = new ArrayList<>();
     ArrayList<String> readings = new ArrayList<>(); // Временный массив для кнопки
+    private final static int REQUEST_ENABLE_BT = 1;
 
     /**
      * Функция получения списка уникальных меток
@@ -171,15 +176,22 @@ public class MainActivity extends AppCompatActivity {
                 // Добавляем строку в ListView (btnCheck)
                 mAdapter.notifyDataSetChanged();
                 /// Запускаем сканер BLE меток
-                try {
+
+                BluetoothAdapter bluetooth= BluetoothAdapter.getDefaultAdapter();// при работе с bluetooth API нужно создать экземпляр класса BluetoothAdapter
+                if (bluetooth.isEnabled()) {
                     mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                     mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
                     mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
                     mBluetoothLeScanner.startScan(mScanCallback);
                 }
-                catch (Exception e) {
-                    ListScanRecords.add("Включите Bluetooth");
+                else
+                {
+                    // Bluetooth выключен. Предложим пользователю включить его.
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 }
+
+
             }
 
         };
